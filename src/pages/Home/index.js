@@ -1,9 +1,16 @@
 import React, { useEffect, useState } from "react";
-import RoutesApp from "./routes";
-import { AuthProvider } from "./contexts/auth";
-import GlobalStyle from "./styles/global";
+import { useNavigate } from "react-router-dom";
+import Header from "../../components/Header";
+import Resume from "../../components/Resume";
+import Form from "../../components/Form";
+import Button from "../../components/Button";
+import useAuth from "../../hooks/useAuth";
+import * as C from "./styles";
 
-const App = () => {
+const Home = () => {
+  const { signout } = useAuth();
+  const navigate = useNavigate();
+
   const data = localStorage.getItem("transactions");
   const [transactionsList, setTransactionsList] = useState(
     data ? JSON.parse(data) : []
@@ -40,18 +47,20 @@ const App = () => {
   };
 
   return (
-    <AuthProvider>
-      <RoutesApp
-        income={income}
-        expense={expense}
-        total={total}
+    <C.Container>
+      <Header />
+      <Resume income={income} expense={expense} total={total} />
+      <Form
+        handleAdd={handleAdd}
         transactionsList={transactionsList}
         setTransactionsList={setTransactionsList}
-        handleAdd={handleAdd}
       />
-      <GlobalStyle />
-    </AuthProvider>
+      <Button Text="Sair" onClick={() => [signout(), navigate("/")]}>
+        Sair
+      </Button>
+    </C.Container>
   );
 };
 
-export default App;
+export default Home;
+
